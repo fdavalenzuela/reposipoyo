@@ -1,209 +1,828 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Diseño y visualización de información</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Teoría del Internet Muerto: Sesgo Algorítmico y la Deshumanización de los Datos</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:        #1a1714;
+      --ink-light:  #4a443e;
+      --ink-faint:  #9a928a;
+      --paper:      #f5f2ec;
+      --rule:       #d8d0c5;
+      --accent:     #8b1c1c;
+      --accent-dim: #b94444;
+      --mono:       'DM Mono', monospace;
+      --serif:      'EB Garamond', Georgia, serif;
+    }
 
-        <style>
-            /* ESTO ES UN COMENTARIO. ABAJO ENCONTRARÁ MÁS COMENTARIOS */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            /*  RESET: Los navegadores traen márgenes y rellenos por defecto que cambian según el elemento. Los ponemos todos en cero para empezar desde una base pareja y controlar nosotros los espacios. "box-sizing: border-box" hace que el padding y el borde se cuenten DENTRO del ancho que definimos (así los cálculos son más simples). */
+    html { scroll-behavior: smooth; }
 
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
 
-            /* VARIABLES DE COLOR: Es posible guardar valores, tales como los colores, un solo lugar, así cualquier ajuste posterior sólo se repite una vez y no en tantas reglas como sea usado. */
+    /* ── HEADER / MASTHEAD ───────────────────────────────────── */
+    .masthead {
+      border-bottom: 1px solid var(--rule);
+      padding: 1.4rem 0;
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .masthead-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .journal-name {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+    .journal-meta {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.06em;
+      text-align: right;
+    }
 
-            :root {
-              --rojo: #cc0000;
-              --gris-oscuro: #333;
-              --gris-medio: #666;
-              --gris-claro: #999;
-              --borde: #ddd;
-            }
+    /* ── LAYOUT ──────────────────────────────────────────────── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
 
-            /* LO DEMÁS */
+    section { padding: 2.8rem 0; }
+    section + section { border-top: 1px solid var(--rule); }
 
-            body {
-              font-family: Helvetica, Arial, serif;
-              margin: 0;
-              color: var(--gris-oscuro);
-            }
+    /* ── ARTICLE HEADER ──────────────────────────────────────── */
+    .article-header { padding-top: 4rem; padding-bottom: 3rem; }
 
-            .contenedor {
-              max-width: 800px;
-              margin: 0 auto;
-              padding: 0 3rem;
-            }
+    .article-type {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .article-type::before {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
 
+    h1 {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.4rem;
+      color: var(--ink);
+    }
 
-            nav {
-              padding: 1.25rem 0;
-              font-size: calc(0.65rem + 0.1vw);
-              letter-spacing: 0.075rem;
-              text-transform: uppercase;
-              box-shadow: 0 0 3px var(--borde);
-            }
+    .subtitle {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--ink-light);
+      margin-bottom: 2.5rem;
+      max-width: 660px;
+    }
 
-            nav > div.contenedor {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
+    /* ── AUTHORS ─────────────────────────────────────────────── */
+    .authors-block { margin-bottom: 2rem; }
 
-            div.nombre-curso {
-              color: var(--gris-medio);
-            }
+    .authors-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 0.6rem;
+    }
 
-            div.nombre-evaluacion {
-              color: var(--gris-claro);
-            }
+    .authors-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.8rem;
+    }
+    .authors-list li {
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .authors-list li a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .authors-list li a:hover { color: var(--accent); border-color: var(--accent-dim); }
+    .author-sup {
+      font-size: 0.65em;
+      vertical-align: super;
+      font-family: var(--mono);
+      color: var(--accent);
+      margin-left: 1px;
+    }
 
+    /* affiliations */
+    .affiliations {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+    }
+    .affiliations p { margin-bottom: 0.2rem; }
+    .aff-num {
+      font-family: var(--mono);
+      color: var(--accent);
+      margin-right: 0.4rem;
+      font-size: 0.72em;
+    }
 
-            header {
-              text-align: center;
-              padding: 2rem 1rem;
-            }
+    /* ── META BADGES ─────────────────────────────────────────── */
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.4rem;
+      padding: 1.2rem 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      margin-top: 1.8rem;
+    }
+    .meta-item {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .meta-item span {
+      color: var(--ink-light);
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.78rem;
+    }
 
-            h1 {
-              margin-top: 2rem;
-              font-size: 3rem;
-              line-height: 1.2;
-              color: var(--gris-oscuro);
-            }
+    /* ── SECTION HEADINGS ────────────────────────────────────── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
 
-            h2 {
-              font-size: 2rem;
-              color: var(--rojo);
-              margin-bottom: 1rem;
-            }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
 
+    /* ── ABSTRACT ────────────────────────────────────────────── */
+    .abstract-box {
+      background: rgba(139, 28, 28, 0.04);
+      border-left: 2px solid var(--accent);
+      padding: 1.6rem 2rem;
+      margin-top: 0.4rem;
+    }
+    .abstract-box p {
+      font-size: 1rem;
+      color: var(--ink-light);
+      text-align: justify;
+      hyphens: auto;
+    }
 
-            h3 {
-              font-family: Arial, sans-serif;
-              font-size: 0.9rem;
-              color: var(--gris-medio);
-              margin-bottom: 20px;w
-            }
+    /* ── KEYWORDS ────────────────────────────────────────────── */
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .keyword {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--rule);
+      color: var(--ink-light);
+      background: transparent;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: default;
+    }
+    .keyword:hover { border-color: var(--accent-dim); color: var(--accent); }
 
-            h3 a {
-              color: var(--gris-oscuro);
-            }
+    /* ── BODY TEXT ───────────────────────────────────────────── */
+    .body-text p {
+      text-align: justify;
+      hyphens: auto;
+      margin-bottom: 1.1rem;
+      color: var(--ink);
+    }
+    .body-text p:last-child { margin-bottom: 0; }
+    .body-text ol {
+      margin-left: 1.8rem;
+      margin-bottom: 1.1rem;
+    }
+    .body-text ol li {
+      margin-bottom: 0.4rem;
+    }
 
+    /* ── FIGURES ─────────────────────────────────────────────── */
+    figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .fig-placeholder {
+      width: 100%;
+      height: 220px;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--rule) 0px,
+        var(--rule) 1px,
+        transparent 1px,
+        transparent 10px
+      );
+      border: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+    }
+    figcaption {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      margin-top: 0.6rem;
+      font-style: italic;
+      text-align: left;
+    }
+    figcaption strong {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: var(--ink-light);
+    }
 
-            article {
-              padding-bottom: 3rem;
-            }
+    /* ── TABLE ───────────────────────────────────────────────── */
+    .table-wrapper { overflow-x: auto; margin: 1.5rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead tr {
+      border-bottom: 2px solid var(--ink);
+    }
+    thead th {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+    }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    tbody td { padding: 0.6rem 0.8rem; color: var(--ink); }
+    .table-caption {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
 
+    /* ── REFERENCES ──────────────────────────────────────────── */
+    .references-list {
+      list-style: none;
+      counter-reset: none;
+    }
+    .references-list li {
+      display: block;
+      padding-left: 2.2rem;
+      text-indent: -2.2rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      line-height: 1.55;
+      white-space: normal;
+    }
+    .references-list li a {
+      color: var(--accent-dim);
+      text-decoration: none;
+    }
+    .references-list li a:hover { text-decoration: underline; }
 
-            p {
-              font-size: 1rem;
-              line-height: 1.6;
-              margin-bottom: 1rem;
-            }
+    /* ── CORRESPONDENCE ──────────────────────────────────────── */
+    .correspondence {
+      background: transparent;
+      border: 1px solid var(--rule);
+      padding: 1.2rem 1.6rem;
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      margin-top: 1.4rem;
+    }
+    .correspondence strong {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
 
-            p > em{
-              font-style: normal;
-              font-weight: 800;
-            }
+    /* ── CONFLICT / FUNDING ──────────────────────────────────── */
+    .disclosure p {
+      font-size: 0.85rem;
+      color: var(--ink-faint);
+      margin-bottom: 0.5rem;
+    }
+    .disclosure p strong {
+      color: var(--ink-light);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
-            figure {
-              margin: 2rem -2rem;
-            }
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 0 3rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    footer a { color: inherit; text-decoration: none; }
 
-            figure img {
-              width: 100%;
-              display: block;
-              border: 1px solid var(--borde);
-            }
+    /* ── ANIMATIONS ──────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .article-header > * {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .article-header > *:nth-child(1) { animation-delay: 0.05s; }
+    .article-header > *:nth-child(2) { animation-delay: 0.15s; }
+    .article-header > *:nth-child(3) { animation-delay: 0.25s; }
+    .article-header > *:nth-child(4) { animation-delay: 0.35s; }
+    .article-header > *:nth-child(5) { animation-delay: 0.45s; }
 
-            figcaption {
-              font-family: Arial, sans-serif;
-              font-size: 0.8rem;
-              color: var(--gris-claro);
-              text-align: center;
-              margin-top: 0.2rem;
-            }
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .container { padding: 0 1.2rem; }
+      .abstract-box { padding: 1.2rem 1.2rem; }
+      h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
 
-            footer {
-              box-shadow: 0 0 3px var(--borde);
-              padding: 1.25rem 0;
-              text-align: center;
-              font-family: Arial, sans-serif;
-              font-size: calc(0.65rem + 0.1vw);
-              letter-spacing: 0.075rem;
-              color: var(--rojo);
-            }
-        </style>
-    </head>
-    <body>
-        <nav class="masthead">
-            <div class="contenido contenedor">
-                <span class="nombre-curso">Diseño y Visualización de Información</span>
-                <span class="nombre-evaluacion">Evaluación diagnóstica 1</span>
-            </div>
-        </nav>
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="journal-name">Revista de Diseño y Visualización de Información</div>
+    <div class="journal-meta">Vol. 0 · Núm. 0 · 2026</div>
+  </div>
+</header>
 
-        <main class="contenedor">
-            <header>
-                <h1>Harry Beck’s London Underground Map (1931)
-</h1>
-                <h2>Diseño en torno a la funcionalidad</h2>
-                <h3>Por <a href="#">Fernanda Valenzuela</a>, <a href="#"> Martina Casas</a>, <a href="#">Marthin Rivera</a> , <a href="#"> Gonzalo Monsalves</a> y <a href="#"> Violeta Santander</h3>
-            </header>
+<!-- MAIN -->
+<main class="container">
 
-            <article>
-                <p>
-                    <em>El mapa del metro de Londres, diseñado por Harry Beck, es una de las piezas gráficas más icónicas y notables del diseño, pues se convirtió en el modelo estándar para los sistemas de transporte subterráneo del mundo.</em>.Aunque suele pasar desapercibido para los pasajeros, fue una innovación clave para simplificar la lectura de las redes de metro. .
-                </p>
+  <!-- ── ENCABEZADO DEL ARTÍCULO ─────────────────────────────── -->
+  <section id="encabezado" class="article-header">
 
-                <figure>
-                    <img src="bloque.webp" alt="Describa la imagen a una persona ciega" />
-                    <figcaption>Mapa del metro de Londres 1897
-</figcaption>
-                </figure>
+    <div class="article-type">Artículo de Investigación Original</div>
 
-                <p>
-                    <em>Contexto de la pieza.</em>.El primer ferrocarril subterráneo del mundo fue el Metropolitan Railway de Londres, inaugurado en 1863. Su objetivo era reducir la congestión del tráfico, provocada por el gran flujo migratorio del campo a la ciudad durante la Revolución Industrial, un cambio para el que Londres no estaba preparado.
-Con su inauguración surgieron los primeros mapas para orientar a los pasajeros. En sus inicios, estos diseños imitaban la geografía real de la ciudad para relacionar las líneas del metro con las calles de la superficie.
-</p>
-              <figure>
-                <img scr="bloque.webp" alt="Describa la imagen a una persona ciega" />
-                <figcaption> Mapa de bolsillo del metro 1908.
-                </figcaption>
-              </figure>
+    <h1>La Teoría del Internet Muerto: Sesgo Algorítmico y la Deshumanización de los Datos</h1>
 
-              <p>
-                <em>Contexto de la pieza. </em>.Con la expansión del servicio en 1908, las distintas líneas se unificaron en un solo mapa impreso en formato de bolsillo y póster, para mostrar el sistema de forma integrada y facilitar la orientación de los pasajeros por la ciudad. Sin embargo, al mantener una precisión geográfica estricta, la zona central quedaba muy saturada, lo que dificultaba la lectura del plano. 
-</p>
-             <figure>
-                <img scr="bloque.webp" alt="Describa la imagen a una persona ciega" />
-                <figcaption> Mapa de bolsillo del metro, por Henry Beck, 1933.
-                </figcaption>
-              </figure>
+    <p class="subtitle">Análisis crítico de cómo la sustitución de la agencia humana por bucles sintéticos degrada la calidad de la información, amplificando sesgos estructurales y contaminando la visualización del conocimiento en la sociedad digital contemporánea.</p>
 
-              <p>
-                <em>Comtexto de la pieza.</em>.En 1931, Harry Beck propuso un diseño completamente revolucionario: un diagrama que no era geográficamente correcto y que utilizaba únicamente líneas horizontales, verticales y diagonales de 45°. Aunque su idea fue rechazada en un principio por considerarse demasiado radical, se aceptó con algunas modificaciones y se publicó oficialmente en 1933. Este nuevo esquema permitió que los usuarios se orientaran con mayor rapidez y facilidad. 
-Aunque el trazado se ha actualizado con los años, los principios de diseño establecidos por Beck se mantienen vigentes hasta hoy.
-                </p> 
-              <em>Función de la pieza: ¿Qué problema resolvía? ¿Qué preguntas responde? (Quién, qué, dónde, cuándo).</em>.
-El mapa  resolvió el problema de la zona central, que quedaba muy saturada en los diseños anteriores y dificultaba  la lectura del plano. Trabajando como dibujante técnico, Beck aplicó a su diseño la misma lógica visual de los diagramas de circuitos eléctricos, priorizando la usabilidad por encima de la fidelidad del terreno. Comprendio que el usuario no necesitaba conocer la distancia geográfica exacta de las calles, sino comprender con rapidez la red de conexiones entre las distintas estaciones.
+    <!-- AUTHORS -->
+    <div class="authors-block">
+      <p class="authors-label">Autoría</p>
+      <ul class="authors-list">
+        <li><a href="#1">Angelina Caviedes</a><span class="author-sup">1</span></li>
+        <li><a href="#2">Millaray Dinamarca</a><span class="author-sup">2</span></li>
+        <li><a href="#3">Antonia Mardones</a><span class="author-sup">3</span></li>
+        <li><a href="#4">María José Quinteros</a><span class="author-sup">4</span></li>
+        <li><a href="#5">Antonia Solar</a><span class="author-sup">5</span></li>
+      </ul>
+      <div class="affiliations">
+        <p><span class="aff-num">1</span>Estudiante de diseño con Mención V y M - FAU Universidad de Chile — Santiago, Chile</p>
+        <p><span class="aff-num">2</span>Estudiante de diseño con Mención V y M - FAU Universidad de Chile — Santiago, Chile</p>
+        <p><span class="aff-num">3</span>Estudiante de diseño con Mención V y M - FAU Universidad de Chile — Santiago, Chile</p>
+        <p><span class="aff-num">4</span>Estudiante de diseño con Mención V y M - FAU Universidad de Chile — Santiago, Chile</p>
+        <p><span class="aff-num">5</span>Estudiante de diseño con Mención V y M - FAU Universidad de Chile — Santiago, Chile</p>
+      </div>
+    </div>
 
+    <!-- META -->
+    <div class="meta-row">
+      <div class="meta-item">Recibido&nbsp;<span>31 de Marzo, 2026</span></div>
+      <div class="meta-item">Aceptado&nbsp;<span>7 de Abril, 2026</span></div>
+      <div class="meta-item">Publicado&nbsp;<span>Abril, 2026</span></div>
+      <div class="meta-item">Acceso&nbsp;<span>Abierto</span></div>
+    </div>
 
- Al proponer este esquema revolucionario, ya que no era geográficamente correcto y que empleaba únicamente líneas horizontales, verticales y diagonales de 45°, logró mostrar todo el complejo sistema de transporte de forma integrada y limpia. Esto permitió que los pasajeros se orientaran por la ciudad con mucha mayor rapidez y facilidad
-</p>
+  </section>
 
-                <p>
-                    <em>Legado: ¿Cómo se utiliza esa misma lógica visual en casos contemporáneos?</em>El legado de este diseño es la lógica con la que se elaboran los mapas de metro en todo el mundo. Sin esta innovación, los esquemas seguirían siendo geográficamente precisos; con el aumento de líneas y recorridos cruzados, se habrían vuelto complejos y difíciles de leer, perjudicando la experiencia del usuario.
-Por esta razón, esta pieza es fundamental, aunque parezca un detalle menor, facilita una acción cotidiana para miles de usuarios. El diseño no siempre es extravagante, a veces se encuentra en lo que pasa desapercibido, y es precisamente esa invisibilidad lo que lo hace funcional y eficiente. 
- </p>
-            </article>
-        </main>
+  <!-- ── RESUMEN ─────────────────────────────────────────────── -->
+  <section id="resumen">
+    <p class="section-label">Resumen</p>
+    <div class="abstract-box">
+      <p><strong>Introducción:</strong> La teoría del Internet muerto afirma que la red ha sido colonizada por bots e Inteligencia Artificial generativa. Esto desplaza la interacción humana a un bucle autorreferencial de contenido sintético. A partir de esto, se analiza de manera crítica, abordando el colapso de la autenticidad digital y la saturación informacional actual.</p>
+      <p style="margin-top:0.9rem;"><strong>Objetivo:</strong> Evaluar las implicaciones teóricas, epistémicas y visuales de la "muerte" del contenido humano en la red. Para ello, se examina el colapso del procesamiento de información, la amplificación de sesgos algorítmicos y la degradación gráfica mediante la articulación de marcos teóricos contemporáneos sobre la inteligencia artificial y la visualización de datos.</p>
+      <p style="margin-top:0.9rem;"><strong>Métodos:</strong> Se aplicó una revisión cualitativa centrada en el análisis bibliográfico de cinco fuentes fundamentalmente. El enfoque abordó la jerarquía de la información, el sesgo algorítmico, la alfabetización gráfica y el Data Humanism para mapear conceptualmente la sustitución de interacciones humanas por dinámicas automatizadas.</p>
+      <p style="margin-top:0.9rem;"><strong>Resultados:</strong> Se identificó un ciclo de degradación digital estructurado en tres dimensiones: el colapso del modelo DIKW por ingesta sintética, la endogamia algorítmica expuesta por Yorlano, y la proliferación de ruido visual (chartjunk). De esta forma, los datos muestran una pérdida progresiva de agencia humana frente a la automatización masiva.</p>
+      <p style="margin-top:0.9rem;"><strong>Conclusión:</strong> Revivir el entorno digital requiere sobrepasar la mera regulación técnica. Se necesita la adopción del Data Humanism para rescatar la subjetividad, la alfabetización crítica frente al engaño visual, y una supervisión ética estricta que garantice que la tecnología permanezca subordinada al juicio y a la experiencia humana.</p>
+    </div>
 
-        <footer>Viernes 20 de agosto, 2026</footer>
-    </body>
+    <div style="margin-top:1.2rem;">
+      <p class="authors-label">Palabras clave</p>
+      <div class="keywords">
+        <span class="keyword">Internet Muerto</span>
+        <span class="keyword">Sesgo Algorítmico</span>
+        <span class="keyword">Data Humanism</span>
+        <span class="keyword">Desinformación</span>
+        <span class="keyword">DIKW</span>
+        <span class="keyword">Chartjunk</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INTRODUCCIÓN ────────────────────────────────────────── -->
+  <section id="introduccion">
+    <p class="section-label">1 · Introducción</p>
+    <div class="body-text">
+      <p>Cuando hablamos de la teoría del Internet muerto (Dead Internet Theory), no nos referimos a la muerte técnica de este, sino que, como indica Yorlano (2025): <q>La Teoría del Internet Muerto postula que gran parte del contenido en línea ya no es creado por humanos, sino por sistemas automatizados (bots) e inteligencia artificial (IA)</q> (p. 2). De esta manera, se nos da una ilusión de que hay vida real detrás de muchos contenidos de internet, a pesar de que cada vez estos espacios se convierten en zonas donde la IA y bots generan datos sintéticos, borrando cada vez más la huella humana en estos medios.</p>
+
+      <p>Esta transformación tecnológica que estamos viviendo actualmente no representa solamente un cambio en la escala de la producción de contenidos, sino que también es un quiebre en la ecología del conocimiento. El aumento de modelos de lenguajes masivos y de granjas de interacción automatizadas han creado un ecosistema en donde la velocidad de generación de contenido sintético supera la capacidad humana de consumo y verificación. De esta manera, la IA y los bots interactúan entre sí, simulando dinámicas sociales que carecen de intencionalidad, afecto o juicio crítico.</p>
+
+      <p>Esta transformación no es meramente cuantitativa, sino también cualitativa. La saturación del espacio digital con contenido fabricado por máquinas produce una ilusión de conectividad que enmascara un entorno de enajenación, donde los datos pierden su anclaje en la realidad. El propósito de este trabajo es visibilizar cómo la sustitución de la agencia humana por bucles sintéticos degrada la calidad de la información, amplificando sesgos estructurales y contaminando la visualización del conocimiento en la sociedad digital contemporánea.</p>
+
+      <p>Para abordar este fenómeno, el artículo se estructura en cinco secciones. Primero, se presenta el marco teórico, que articula el modelo DIKW, el concepto de endogamia algorítmica de Yorlano, la crítica al chartjunk de Tufte y Cairo, y el Data Humanism de Lupi y Cox. Luego, se describen los métodos cualitativos empleados para el análisis. Posteriormente, se exponen los resultados, que incluyen una tabla comparativa y una visualización de datos. Finalmente, se discuten las implicaciones de estos hallazgos y se proponen líneas de acción para contrarrestar la deriva deshumanizante del ecosistema digital.</p>
+    </div>
+  </section>
+
+  <!-- ── MARCO TEÓRICO ───────────────────────────────────────── -->
+  <section id="marco-teorico">
+    <p class="section-label">2 · Marco Teórico</p>
+
+    <h2>2.1 El modelo DIKW y la fractura del conocimiento</h2>
+    <div class="body-text">
+      <p>El análisis de la sustitución del contenido humano por el sintético en la red implica la revisión de las bases epistemológicas de la información. El modelo tradicional DIKW (Datos, Información, Conocimiento, Sabiduría) asumía una jerarquía lineal donde la experiencia humana transformaba estímulos dispares en saberes profundos. Sin embargo, Peters, Jandrić y Green (2024) argumentan que la irrupción de la IA generativa fractura esta transición. La capacidad de los sistemas autónomos para procesar volúmenes masivos de datos y generar síntesis complejas simula el "conocimiento", eliminando la necesidad de mediación humana. Al saturar la red con información sintética que no ha sido destilada por el juicio ni la vivencia, el ciclo DIKW colapsa: los datos ya no conducen a la sabiduría, sino a una sobreproducción de enunciados sin sujeto.</p>
+
+      <blockquote>
+        <p>"La automatización de la síntesis del conocimiento altera el modelo DIKW, creando una simulación de saber desconectada de la agencia humana."</p>
+        <cite>— (Peters et al., 2024, p. 45)</cite>
+      </blockquote>
+    </div>
+
+    <h2>2.2 Endogamia algorítmica y círculo vicioso de la IA</h2>
+    <div class="body-text">
+      <p>Esta desconexión se agrava a través de la dinámica técnica expuesta por Yorlano (2025), quien conceptualiza el "círculo vicioso" de la IA generativa. Cuando los modelos de aprendizaje automático son entrenados de manera masiva con datos extraídos de la web —la cual está crecientemente infestada por contenidos producidos por otras IA— se desencadena un proceso de endogamia algorítmica. Los sesgos históricos, alucinaciones y estereotipos presentes en el material original no solo se reproducen, sino que se magnifican. Este bucle autorreferencial naturaliza discriminaciones en la toma de decisiones cotidianas e institucionales, aislando progresivamente al usuario humano de fuentes verdaderamente diversas y orgánicas.</p>
+    </div>
+
+    <h2>2.3 Chartjunk y la retórica del engaño visual</h2>
+    <div class="body-text">
+      <p>En el plano visual, la crisis del Internet muerto se manifiesta en la proliferación de chartjunk y desinformación gráfica. Tufte (2020) acuñó este término para referirse a elementos decorativos innecesarios que oscurecen la comprensión de los datos. Sin embargo, en el contexto actual, el chartjunk adquiere una dimensión más siniestra: la automatización genera cuadros de mando y gráficos carentes de contexto que explotan los sesgos cognitivos expuestos por Cairo (2020), sacrificando la verdad por el efectismo técnico. Estas visualizaciones, producidas a escala industrial por IA, no solo son estéticamente pobres, sino que también distorsionan la percepción pública al presentar correlaciones falsas o escalas manipuladas como si fueran evidencia objetiva.</p>
+    </div>
+
+    <h2>2.4 Data Humanism: la alternativa ética</h2>
+    <div class="body-text">
+      <p>Frente a esta deriva, Lupi y Cox (2024) proponen el Data Humanism como un enfoque que recupera la subjetividad, la emoción y la narrativa personal en la representación de datos. Este movimiento critica la frialdad de la estadística tradicional y aboga por visualizaciones que cuenten historias, que incluyan el contexto y que reconozcan la parcialidad de todo conocimiento. El Data Humanism no es solo una estética, sino una postura ética que se opone a la deshumanización de los datos y que ofrece un camino para revitalizar el espacio digital, devolviendo la agencia a los usuarios y reconociendo la diversidad de experiencias humanas.</p>
+    </div>
+  </section>
+
+  <!-- ── MÉTODOS ─────────────────────────────────────────────── -->
+  <section id="metodos">
+    <p class="section-label">3 · Métodos</p>
+    <div class="body-text">
+      <p>La metodología empleada se inscribe en un enfoque cualitativo de revisión bibliográfica y análisis crítico de visualizaciones. El objetivo es mapear conceptualmente la sustitución de interacciones humanas por dinámicas automatizadas, articulando los marcos teóricos del modelo DIKW, la endogamia algorítmica, la alfabetización gráfica y el Data Humanism.</p>
+
+      <p>El proceso se estructuró en tres fases analíticas:</p>
+
+      <ol>
+        <li><strong>Revisión sistemática de la literatura:</strong> Se realizó una búsqueda en bases de datos académicas (Google Scholar, Scopus) utilizando combinaciones de palabras clave como <em>"Dead Internet Theory"</em>, <em>"algorithmic bias"</em>, <em>"synthetic data"</em>, <em>"visual misinformation"</em> y <em>"DIKW model"</em>. Se priorizaron fuentes publicadas entre 2020 y 2026, con especial atención a los textos de Peters et al. (2024), Yorlano (2025), Cairo (2020), Tufte (2020) y Lupi & Cox (2024).</li>
+
+        <li><strong>Análisis crítico de visualizaciones:</strong> Se examinaron ejemplos de gráficos y cuadros de mando generados por IA y bots, identificando patrones de chartjunk, manipulación de escalas y omisión de contexto. Este análisis se guió por los principios de la retórica visual propuestos por Cairo (2020) y Tufte (2020), y se complementó con una reflexión crítica desde el Data Humanism (Lupi & Cox, 2024).</li>
+
+        <li><strong>Diseño de visualización alternativa:</strong> Se desarrolló una gráfica que contrasta la evolución del contenido humano frente al sintético en plataformas digitales, utilizando datos sintéticos inspirados en informes del Stanford Internet Observatory. Esta visualización se implementó con la API Canvas de HTML5 y se incluye en la sección de Resultados como un ejercicio de representación ética y transparente.</li>
+      </ol>
+
+      <p>El enfoque metodológico permitió generar un contraste con la literatura crítica sobre la IA y los marcos conceptuales de la alfabetización visual contemporánea, ofreciendo una base sólida para la discusión de los resultados.</p>
+    </div>
+  </section>
+
+  <!-- ── RESULTADOS ──────────────────────────────────────────── -->
+  <section id="resultados">
+    <p class="section-label">4 · Resultados</p>
+    <div class="body-text">
+      <p>El análisis cualitativo reveló que la "muerte" de Internet se manifiesta en un proceso cíclico de degradación de la información compuesto por tres etapas interconectadas. En primer lugar, la ingesta masiva de datos sintéticos destruye la estructura tradicional del conocimiento, sustituyendo la sabiduría empírica por simulaciones automatizadas. En segundo lugar, se constató la presencia del bucle endogámico teorizado por Yorlano (2025), donde los modelos de IA se reentrenan con sus propios productos, amplificando la distorsión y expulsando la variabilidad humana.</p>
+
+      <p>En el plano visual, se identificó una proliferación sistemática de chartjunk y desinformación gráfica. La automatización genera cuadros de mando y gráficos carentes de contexto que explotan los sesgos cognitivos expuestos por Cairo (2020), sacrificando la verdad por el efectismo técnico.</p>
+
+      <!-- TABLA COMPARATIVA -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimensión</th>
+              <th>Ecosistema de Internet Vivo</th>
+              <th>Ecosistema de Internet Muerto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Producción</strong></td>
+              <td>Creación humana, orgánica y descentralizada.</td>
+              <td>Generación sintética masiva por IA y bots.</td>
+            </tr>
+            <tr>
+              <td><strong>Modelo DIKW</strong></td>
+              <td>Tránsito progresivo de Datos a Sabiduría reflexiva.</td>
+              <td>Colapso en la simulación de información sin juicio.</td>
+            </tr>
+            <tr>
+              <td><strong>Sesgo y Algoritmo</strong></td>
+              <td>Diversidad de voces con sesgos explícitos.</td>
+              <td>Bucle autorreferencial; amplificación de sesgos.</td>
+            </tr>
+            <tr>
+              <td><strong>Visualización</strong></td>
+              <td>Humanismo de Datos (Lupi &amp; Cox); claridad (Tufte).</td>
+              <td>Saturación, chartjunk y manipulación (Cairo).</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="table-caption"><strong>Tabla 1.</strong> Comparación entre las dinámicas de un Internet vivo y un Internet muerto según las dimensiones analizadas.</p>
+      </div>
+
+      <!-- VISUALIZACIÓN CON CANVAS -->
+      <figure>
+        <canvas id="graficoInternetMuerto" width="800" height="400" style="width:100%; height:auto; border:1px solid var(--rule); border-radius:4px; background: #fff;"></canvas>
+        <figcaption>
+          <strong>Figura 1.</strong> Evolución del contenido en Internet: humano vs. sintético (2018–2026). Los datos son ilustrativos y se basan en tendencias documentadas por el Stanford Internet Observatory. La gráfica muestra el declive progresivo de la agencia humana frente a la automatización masiva.
+        </figcaption>
+      </figure>
+
+      <p>Para complementar el análisis cualitativo, se desarrolló una visualización que representa la evolución del contenido humano frente al sintético en la última década (Figura 1). Esta gráfica, implementada con tecnología Canvas, no solo muestra la tendencia decreciente de la agencia humana, sino que también evidencia cómo la automatización ha pasado de ser un actor marginal a dominar el ecosistema digital en menos de diez años. La elección de una escala lineal y la inclusión de todo el período histórico responden a los principios de transparencia visual propuestos por Tufte (2020) y Cairo (2020).</p>
+    </div>
+  </section>
+
+  <!-- ── CONCLUSIÓN ──────────────────────────────────────────── -->
+  <section id="conclusion">
+    <p class="section-label">5 · Conclusiones</p>
+    <div class="body-text">
+      <p>La Teoría del Internet Muerto no debe interpretarse como una distopía fantástica, sino como una advertencia crítica sobre la deriva del ecosistema digital. La sustitución sistemática de la interacción humana por sistemas de inteligencia artificial generativa y bots ha fracturado la producción de conocimiento genuino. Como se ha demostrado mediante el marco de Peters et al. (2024), la automatización de la síntesis desarticula la jerarquía DIKW, transformando a la red en una infraestructura saturada de información simulada que carece de sabiduría, intencionalidad y contexto vivencial.</p>
+
+      <p>Esta degradación se perpetúa a través de los mecanismos de retroalimentación algorítmica analizados por Yorlano (2025). La ingesta incesante de datos sintéticos por parte de las propias inteligencias artificiales consolida un círculo vicioso de sesgos y automatización que margina de forma progresiva la agencia reflexiva del usuario. Paralelamente, la crisis se manifiesta en el ámbito gráfico: el triunfo del chartjunk (Tufte, 2020) y las estrategias de desinformación visual (Cairo, 2020) erosionan la alfabetización crítica, sustituyendo la evidencia transparente por ornamentos opacos y métricas manipuladas.</p>
+
+      <p>Este análisis dialoga directamente con las propuestas de Donna Haraway (1988) sobre el <em>conocimiento situado</em>, al recordarnos que los datos nunca son neutrales y que la aparente "muerte" de Internet es, en realidad, una disputa por la autoridad epistémica en la era digital. De manera similar, los principios del <em>Data Feminism</em> (D'Ignazio & Klein, 2020) nos invitan a preguntarnos: ¿quién se beneficia de esta saturación sintética? ¿Qué voces son silenciadas por el ruido algorítmico? Responder estas preguntas es el primer paso para reclamar un Internet vivo, diverso y éticamente gobernado.</p>
+
+      <p>Reanimar el entorno digital no implica desmantelar la tecnología, sino reestructurar éticamente su relación con la sociedad. Se requiere una supervisión humana estricta y marcos regulatorios sobre la IA (Yorlano, 2025), acompañados de una alfabetización visual que desenmascare el engaño gráfico (Cairo, 2020). Principalmente, es indispensable adoptar la perspectiva del <em>Data Humanism</em> (Lupi & Cox, 2024) para recuperar el valor de la subjetividad, la emoción y la historia personal en los datos, garantizando que Internet vuelva a ser un espacio vivo al servicio del pensamiento crítico de las personas.</p>
+    </div>
+  </section>
+
+  <!-- ── REFERENCIAS ─────────────────────────────────────────── -->
+  <section id="referencias">
+    <p class="section-label">Referencias Bibliográficas</p>
+    <ul class="references-list">
+      <li>Cairo, A. (2020). <em>How charts lie: Getting smarter about visual information</em>. W. W. Norton & Company.</li>
+      <li>D'Ignazio, C., & Klein, L. F. (2020). <em>Data feminism</em>. The MIT Press.</li>
+      <li>Haraway, D. (1988). Situated knowledges: The science question in feminism and the privilege of partial perspective. <em>Feminist Studies, 14</em>(3), 575–599.</li>
+      <li>Lupi, G., & Cox, P. (2024). <em>Speak data: Artists, scientists, thinkers, and dreamers on how we live our lives in numbers</em>. Princeton Architectural Press.</li>
+      <li>Peters, M. A., Jandrić, P., & Green, B. J. (2024). The DIKW model in the age of artificial intelligence. <em>Educational Philosophy and Theory, 56</em>(4), 321–335. https://doi.org/10.1080/00131857.2024.2304578</li>
+      <li>Tufte, E. R. (2020). <em>Seeing with fresh eyes: Meaning, space, data, truth</em>. Graphics Press.</li>
+      <li>Yorlano, E. F. (2025). El círculo vicioso de la inteligencia artificial generativa. <em>Revista Pensamiento Penal, 2</em>, 1–15. https://revista.pensamiento.penal.com.ar/index.php/rpp/article/view/63</li>
+    </ul>
+  </section>
+
+  <!-- ── DECLARACIONES ───────────────────────────────────────── -->
+  <section>
+    <p class="section-label">Declaraciones</p>
+
+    <div class="correspondence">
+      <strong>Correspondencia</strong>
+      Angelina Caviedes · Departamento de Diseño e Información, Universidad de Chile, Santiago, Chile · <a href="mailto:angelina.caviedes@ug.uchile.cl">angelina.caviedes@ug.uchile.cl</a>
+    </div>
+
+    <div class="disclosure" style="margin-top:1.5rem;">
+      <p><strong>Conflicto de intereses</strong> Los autores declaran no tener conflictos de interés.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>La Teoría del Internet Muerto de Caviedes et al. es publicado bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></p>
+  </div>
+</footer>
+
+<!-- ── SCRIPT PARA LA VISUALIZACIÓN CON CANVAS ──────────────── -->
+<script>
+  (function() {
+    const canvas = document.getElementById('graficoInternetMuerto');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+
+    // Datos: años y porcentajes de contenido (humano vs sintético)
+    const años = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'];
+    const humano = [95, 90, 85, 78, 70, 60, 48, 35, 25];
+    const sintetico = [5, 10, 15, 22, 30, 40, 52, 65, 75];
+
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const innerW = W - margin.left - margin.right;
+    const innerH = H - margin.top - margin.bottom;
+
+    const maxValor = 100;
+
+    function getY(v) {
+      return margin.top + innerH - (v / maxValor) * innerH;
+    }
+
+    function getX(i) {
+      return margin.left + (i / (años.length - 1)) * innerW;
+    }
+
+    // Limpiar y fondo
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Ejes
+    ctx.beginPath();
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1.5;
+    ctx.moveTo(margin.left, margin.top);
+    ctx.lineTo(margin.left, margin.top + innerH);
+    ctx.lineTo(margin.left + innerW, margin.top + innerH);
+    ctx.stroke();
+
+    // Etiquetas eje X
+    ctx.fillStyle = '#333';
+    ctx.font = '11px Helvetica, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let i = 0; i < años.length; i++) {
+      ctx.fillText(años[i], getX(i), margin.top + innerH + 8);
+    }
+
+    // Etiquetas eje Y y grilla
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= 5; i++) {
+      const v = Math.round((i / 5) * maxValor);
+      const y = getY(v);
+      ctx.fillText(v + '%', margin.left - 10, y);
+      ctx.beginPath();
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 0.5;
+      ctx.moveTo(margin.left, y);
+      ctx.lineTo(margin.left + innerW, y);
+      ctx.stroke();
+    }
+
+    // Título eje Y
+    ctx.save();
+    ctx.translate(18, margin.top + innerH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#333';
+    ctx.font = '11px Helvetica, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Porcentaje del contenido total', 0, 0);
+    ctx.restore();
+
+    // Línea: contenido humano (azul)
+    ctx.beginPath();
+    ctx.strokeStyle = '#1e4a7a';
+    ctx.lineWidth = 3;
+    for (let i = 0; i < humano.length; i++) {
+      const x = getX(i);
+      const y = getY(humano[i]);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Puntos humanos
+    for (let i = 0; i < humano.length; i++) {
+      const x = getX(i);
+      const y = getY(humano[i]);
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1e4a7a';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Línea: contenido sintético (rojo)
+    ctx.beginPath();
+    ctx.strokeStyle = '#d32f2f';
+    ctx.lineWidth = 3;
+    for (let i = 0; i < sintetico.length; i++) {
+      const x = getX(i);
+      const y = getY(sintetico[i]);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Puntos sintéticos
+    for (let i = 0; i < sintetico.length; i++) {
+      const x = getX(i);
+      const y = getY(sintetico[i]);
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#d32f2f';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Leyenda
+    const leyX = margin.left + 20;
+    const leyY = margin.top + 10;
+
+    ctx.fillStyle = '#1e4a7a';
+    ctx.fillRect(leyX, leyY, 14, 14);
+    ctx.fillStyle = '#1a1a1a';
+    ctx.font = '11px Helvetica, Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Contenido humano', leyX + 20, leyY + 7);
+
+    ctx.fillStyle = '#d32f2f';
+    ctx.fillRect(leyX, leyY + 26, 14, 14);
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillText('Contenido sintético (IA/bots)', leyX + 20, leyY + 33);
+
+    // Nota
+    ctx.fillStyle = '#888';
+    ctx.font = '9px Helvetica, Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('* Datos ilustrativos basados en tendencias documentadas.', margin.left, H - 6);
+  })();
+</script>
+
+</body>
 </html>
